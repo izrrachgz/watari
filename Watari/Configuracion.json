@@ -1,0 +1,4 @@
+{
+  "CadenaDeConexion": "Data Source =.\\SQLEXPRESS;Initial Catalog =Utilidades.Contexto;Integrated Security = true;",
+  "DirectorioEsquema": "C:\\NetCore\\Servicio\\Contexto\\Esquema\\"
+}

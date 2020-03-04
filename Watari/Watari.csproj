@@ -3,7 +3,18 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <StartupObject>Watari.Program</StartupObject>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Configuracion.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Configuracion.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
