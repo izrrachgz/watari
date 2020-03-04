@@ -103,7 +103,7 @@ namespace Watari
     /// Determina la funcion y operacion a relizar
     /// segun el comando proporcionado e invoca su tarea
     /// </summary>
-    /// <param name="comando">Secuencia de instrucciones</param>
+    /// <param name="args">Secuencia de instrucciones</param>
     /// <returns></returns>
     private static async Task ProcesarComando(string[] args)
     {
