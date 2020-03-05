@@ -17,6 +17,11 @@ namespace Watari
     #region Propiedades
 
     /// <summary>
+    /// Indica si el ambito de trabajo ha iniciado correctamente
+    /// </summary>
+    private static bool InicializacionCorrecta { get; set; }
+
+    /// <summary>
     /// Configuracion asociada al contexto
     /// </summary>
     private static ConfiguracionContexto Configuracion { get; set; }
@@ -34,6 +39,7 @@ namespace Watari
     /// <param name="args">Argumentos</param>
     static void Main(string[] args)
     {
+      InicializacionCorrecta = false;
       //Verificar los argumentos
       if (args == null || args.Length.Equals(0))
       {
@@ -42,6 +48,11 @@ namespace Watari
       }
       //Inicializar el entorno de trabajo
       Inicializar();
+      //Si no ha inicializado correctamente se termina la tarea
+      if (!InicializacionCorrecta)
+      {
+        return;
+      }
       //Procesar el comando solicitado
       ProcesarComando(args).Wait();
       Console.WriteLine(@":p");
@@ -92,11 +103,28 @@ namespace Watari
 
       #endregion
 
+      #region Integridad de Configuracion
+
+      if (Configuracion.CadenaDeConexion.Trim().Length.Equals(0))
+      {
+        Console.WriteLine(@"La cadena de conexion en el archivo de configuracion no es valida.");
+        return;
+      }
+      if (Configuracion.DirectorioEsquema.Trim().Length.Equals(0))
+      {
+        Console.WriteLine(@"El directorio de almacenamiento en el archivo de configuracion no es valido.");
+        return;
+      }
+
+      #endregion
+
       #region Inicializar las instancias
 
       FuncionRutinasSql = new FuncionRutinasSql(Configuracion.CadenaDeConexion, Configuracion.DirectorioEsquema);
 
       #endregion
+
+      InicializacionCorrecta = true;
     }
 
     /// <summary>
@@ -113,16 +141,22 @@ namespace Watari
       string operacion = args[1].ToLowerInvariant();
       //El tercer valor de argumento debe ser el parametro para la operacion
       string parametro = args[2].ToLowerInvariant();
+      //Dirigir hacia la funcion solicitada
       switch (funcion)
       {
         case @"sql":
+          //Dirigir hacia la operacion sql solicitada
           switch (operacion)
           {
             case @"-rutinassql":
+              //Utilizar los parametros proporcionados
               switch (parametro)
               {
                 case @"-sincronizar":
                   await FuncionRutinasSql.Sincronizar();
+                  break;
+                case @"-listado":
+                  await FuncionRutinasSql.Listado();
                   break;
                 default:
                   MostrarAyuda();
@@ -146,7 +180,8 @@ namespace Watari
     private static void MostrarAyuda()
     {
       Console.WriteLine(@"-------------Opciones---------------");
-      Console.WriteLine(@">Sql -Rutinas -Sincronizar");
+      Console.WriteLine(@">Sql -RutinasSql -Sincronizar");
+      Console.WriteLine(@">Sql -RutinasSql -Listado");
       Console.WriteLine(@"------------------------------------");
     }
 

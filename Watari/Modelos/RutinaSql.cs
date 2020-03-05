@@ -1,4 +1,5 @@
-﻿using Watari.Enumerados;
+﻿using System;
+using Watari.Enumerados;
 
 namespace Watari.Modelos
 {
@@ -8,6 +9,11 @@ namespace Watari.Modelos
   /// </summary>
   public class RutinaSql
   {
+    /// <summary>
+    /// Esquema asociado (dbo,sys)
+    /// </summary>
+    public string Esquema { get; set; }
+
     /// <summary>
     /// Nombre de la rutina
     /// </summary>
@@ -22,5 +28,15 @@ namespace Watari.Modelos
     /// Tipo de rutina
     /// </summary>
     public TipoRutina Tipo { get; set; }
+
+    /// <summary>
+    /// Momento en el que se ha registrado
+    /// </summary>
+    public DateTime Creado { get; set; }
+
+    /// <summary>
+    /// Ultima vez que ha sido modificado
+    /// </summary>
+    public DateTime Modificado { get; set; }
   }
 }

@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Watari.Enumerados;
+using Watari.Extensiones;
 using Watari.Modelos;
+using Watari.Utilidades;
 
 namespace Watari.Funciones.Sql
 {
@@ -83,68 +83,28 @@ namespace Watari.Funciones.Sql
     /// <returns></returns>
     public async Task Sincronizar()
     {
-      if (CadenaDeConexion.Trim().Length.Equals(0))
+      List<RutinaSql> rutinas = await ObtenerRutinasSql();
+      Console.WriteLine($@"Funciones Escalar : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.FuncionEscalar))}.");
+      Console.WriteLine($@"Funciones Tabla : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.FuncionTabla))}.");
+      Console.WriteLine($@"Procedimientos Almacenados : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.Procedimiento))}.");
+      if (rutinas.Any())
       {
-        Console.WriteLine(@"La cadena de conexion en el archivo de configuracion no es valida.");
-        return;
+        EliminarRutinasAnteriores();
+        await GuardarRutinasEnArchivos(rutinas);
       }
-      if (DirectorioEsquema.Trim().Length.Equals(0))
+    }
+
+    /// <summary>
+    /// Muestra todas las rutinas sql registradas en el esquema asociado
+    /// </summary>
+    /// <returns></returns>
+    public async Task Listado()
+    {
+      List<RutinaSql> rutinas = await ObtenerRutinasSql();
+      rutinas.ForEach(r =>
       {
-        Console.WriteLine(@"El directorio de almacenamiento en el archivo de configuracion no es valido.");
-        return;
-      }
-      using (SqlConnection conexion = new SqlConnection(CadenaDeConexion))
-      {
-        try
-        {
-          //Establecer la conexion con el repositorio
-          await conexion.OpenAsync();
-          List<RutinaSql> rutinas = null;
-          using (SqlCommand comando = new SqlCommand(SqlObtenerRutinas, conexion))
-          {
-            using (SqlDataReader lector = await comando.ExecuteReaderAsync())
-            {
-              if (lector.HasRows)
-              {
-                //Leer todas las rutinas
-                rutinas = new List<RutinaSql>();
-                while (await lector.ReadAsync())
-                {
-                  RutinaSql rutina = new RutinaSql()
-                  {
-                    Nombre = $@"[{lector.GetString(0)}].[{lector.GetString(1)}]",
-                    Tipo = (TipoRutina)lector.GetInt32(2),
-                    Definicion = lector.GetString(3)
-                  };
-                  rutinas.Add(rutina);
-                }
-                Console.WriteLine($@"Funciones Escalar : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.FuncionEscalar))}.");
-                Console.WriteLine($@"Funciones Tabla : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.FuncionTabla))}.");
-                Console.WriteLine($@"Procedimientos Almacenados : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.Procedimiento))}.");
-                //Eliminar todas las rutinas anteriores
-                EliminarRutinasAnteriores();
-              }
-              else
-              {
-                Console.WriteLine(@"No hay ninguna rutina asociada al esquema.");
-              }
-              lector.Dispose();
-            }
-            comando.Dispose();
-          }
-          //Terminar la sesion
-          if (conexion.State.Equals(ConnectionState.Open))
-            conexion.Close();
-          //Guardar todas las rutinas
-          if (rutinas != null && rutinas.Any())
-            await GuardarRutinasEnArchivos(rutinas);
-        }
-        catch (Exception e)
-        {
-          Console.WriteLine(e);
-        }
-        conexion.Dispose();
-      }
+        Console.WriteLine($"[{r.Esquema}].[{r.Nombre}] Creado : {r.Creado}, Ultima Modificacion : {r.Modificado}");
+      });
     }
 
     #endregion
@@ -172,6 +132,35 @@ namespace Watari.Funciones.Sql
       //Comprobar que exista el directorio de funciones tipo tabla, si no, crearlo.
       if (!Directory.Exists(DirectorioFuncionesTabla))
         Directory.CreateDirectory(DirectorioFuncionesTabla);
+    }
+
+    /// <summary>
+    /// Permite obtener todas las rutinas sql registradas
+    /// en el esquema asociado
+    /// </summary>
+    /// <returns>Coleccion de rutinas sql</returns>
+    private async Task<List<RutinaSql>> ObtenerRutinasSql()
+    {
+      ComandoSql comando = new ComandoSql(CadenaDeConexion);
+      RespuestaColeccion<FilaDeTabla> resultados = await comando.Consulta(SqlObtenerRutinas);
+      List<RutinaSql> rutinas;
+      if (resultados.Correcto)
+      {
+        rutinas = resultados.Coleccion.Select(r => new RutinaSql
+        {
+          Esquema = r.Columnas.Obtener<string>(@"Esquema"),
+          Nombre = r.Columnas.Obtener<string>(@"Nombre"),
+          Definicion = r.Columnas.Obtener<string>(@"Definicion"),
+          Tipo = r.Columnas.Obtener<TipoRutina>(@"Tipo"),
+          Creado = r.Columnas.Obtener<DateTime>(@"Creado"),
+          Modificado = r.Columnas.Obtener<DateTime>(@"Modificado")
+        }).ToList();
+      }
+      else
+      {
+        rutinas = new List<RutinaSql>(0);
+      }
+      return rutinas;
     }
 
     /// <summary>
