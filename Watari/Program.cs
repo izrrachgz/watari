@@ -3,6 +3,8 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Watari.Extensiones;
+using Watari.Funciones.Cs;
 using Watari.Funciones.Sql;
 using Watari.Modelos;
 
@@ -15,6 +17,13 @@ namespace Watari
   class Program
   {
     #region Propiedades
+
+    private const string Ayuda = @"-------------Opciones---------------
+>Sql -RutinasSql -Sincronizar
+>Sql -RutinasSql -Listado
+>Cs -Generar -Entidad Entidad1,Entidad2,Entidad3
+>Cs -Generar -ProveedorDeDatos Entidad1,Entidad2,Entidad3
+------------------------------------";
 
     /// <summary>
     /// Indica si el ambito de trabajo ha iniciado correctamente
@@ -31,6 +40,8 @@ namespace Watari
     /// </summary>
     private static FuncionRutinasSql FuncionRutinasSql { get; set; }
 
+    private static FuncionGeneradorDeCodigo FuncionGeneradorDeCodigo { get; set; }
+
     #endregion
 
     /// <summary>
@@ -41,7 +52,7 @@ namespace Watari
     {
       InicializacionCorrecta = false;
       //Verificar los argumentos
-      if (args == null || args.Length.Equals(0))
+      if (args == null || args.NoEsValida())
       {
         MostrarAyuda();
         return;
@@ -110,17 +121,24 @@ namespace Watari
         Console.WriteLine(@"La cadena de conexion en el archivo de configuracion no es valida.");
         return;
       }
-      if (Configuracion.DirectorioEsquema.Trim().Length.Equals(0))
+      if (Configuracion.DirectorioSolucion.Trim().Length.Equals(0))
       {
-        Console.WriteLine(@"El directorio de almacenamiento en el archivo de configuracion no es valido.");
+        Console.WriteLine(@"El directorio de solucion en el archivo de configuracion no es valido.");
         return;
       }
+
+      //Debe terminar con \ 
+      Configuracion.DirectorioSolucion = Configuracion.DirectorioSolucion.EndsWith(@"\")
+        ? Configuracion.DirectorioSolucion
+        : Configuracion.DirectorioSolucion + @"\";
 
       #endregion
 
       #region Inicializar las instancias
 
-      FuncionRutinasSql = new FuncionRutinasSql(Configuracion.CadenaDeConexion, Configuracion.DirectorioEsquema);
+      FuncionRutinasSql = new FuncionRutinasSql(Configuracion.CadenaDeConexion, Configuracion.DirectorioSolucion);
+
+      FuncionGeneradorDeCodigo = new FuncionGeneradorDeCodigo(Configuracion.DirectorioSolucion);
 
       #endregion
 
@@ -135,6 +153,11 @@ namespace Watari
     /// <returns></returns>
     private static async Task ProcesarComando(string[] args)
     {
+      if (args.Length < 3)
+      {
+        MostrarAyuda();
+        return;
+      }
       //El primer valor de argumento debe ser la funcion
       string funcion = args[0].ToLowerInvariant();
       //El primer valor de argumento debe ser la operacion de la funcion a ejecutar
@@ -168,6 +191,31 @@ namespace Watari
               break;
           }
           break;
+        case @"cs":
+          //Dirigir hacia la operacion cs solicitada
+          switch (operacion)
+          {
+            case @"-generar":
+              switch (parametro)
+              {
+                case @"-entidad":
+                  string[] entidades = args[3].Split(',');
+                  await FuncionGeneradorDeCodigo.Entidades(entidades);
+                  break;
+                case @"-proveedordedatos":
+                  string[] proveedores = args[3].Split(',');
+                  await FuncionGeneradorDeCodigo.ProveedoresDeDatos(proveedores);
+                  break;
+                default:
+                  MostrarAyuda();
+                  break;
+              }
+              break;
+            default:
+              MostrarAyuda();
+              break;
+          }
+          break;
         default:
           MostrarAyuda();
           break;
@@ -177,13 +225,7 @@ namespace Watari
     /// <summary>
     /// Muestra la ayuda de la aplicacion
     /// </summary>
-    private static void MostrarAyuda()
-    {
-      Console.WriteLine(@"-------------Opciones---------------");
-      Console.WriteLine(@">Sql -RutinasSql -Sincronizar");
-      Console.WriteLine(@">Sql -RutinasSql -Listado");
-      Console.WriteLine(@"------------------------------------");
-    }
+    private static void MostrarAyuda() => Console.WriteLine(Ayuda);
 
     #endregion
   }

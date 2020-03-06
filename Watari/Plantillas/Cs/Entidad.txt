@@ -1,0 +1,17 @@
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Contexto.Enumerados;
+using Utilidades.Entidades;
+
+namespace Contexto.Entidades
+{
+  /// <summary>
+  /// Provee un modelo de datos para representar
+  /// a la entidad {{Nombre}}
+  /// </summary>
+  [Table(@"{{Nombre}}")]
+  public class {{Nombre}} : EntidadBase
+  {
+  }
+}

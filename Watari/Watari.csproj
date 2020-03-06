@@ -22,9 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="Utilidades">
-      <HintPath>Bibliotecas\Utilidades.dll</HintPath>
-    </Reference>
+    <None Update="Plantillas\Cs\Entidad.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Plantillas\Cs\ProveedorDeDatos.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

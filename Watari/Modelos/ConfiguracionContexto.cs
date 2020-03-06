@@ -12,8 +12,8 @@
     public string CadenaDeConexion { get; set; }
 
     /// <summary>
-    /// Direccion hacia la carpeta para almacenar las rutinas
+    /// Direccion hacia la carpeta de solucion del proyecto
     /// </summary>
-    public string DirectorioEsquema { get; set; }
+    public string DirectorioSolucion { get; set; }
   }
 }

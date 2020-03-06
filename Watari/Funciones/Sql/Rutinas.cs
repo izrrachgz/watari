@@ -24,24 +24,29 @@ namespace Watari.Funciones.Sql
     private string CadenaDeConexion { get; }
 
     /// <summary>
-    /// Directorio para almacenar las rutinas
+    /// Directorio donde se ubica la solucion
     /// </summary>
-    private string DirectorioEsquema { get; }
+    private string DirectorioSolucion { get; }
 
     /// <summary>
     /// Directorio para almacenar los procedimientos
     /// </summary>
-    private string DirectorioProcedimientos => DirectorioEsquema + @"Procedimientos\";
+    private string DirectorioProcedimientos => $@"{DirectorioSolucion}Contexto\Esquema\Procedimientos\";
 
     /// <summary>
     /// Directorio para almacenar las funciones escalares
     /// </summary>
-    private string DirectorioFuncionesEscalares => DirectorioEsquema + @"Funciones\Escalar\";
+    private string DirectorioFuncionesEscalares => $@"{DirectorioSolucion}Contexto\Esquema\Funciones\Escalar\";
 
     /// <summary>
     /// Directorio para almacenar las funciones de tabla
     /// </summary>
-    private string DirectorioFuncionesTabla => DirectorioEsquema + @"Funciones\Tabla\";
+    private string DirectorioFuncionesTabla => $@"{DirectorioSolucion}Contexto\Esquema\Funciones\Tabla\";
+
+    /// <summary>
+    /// Indica si ha concluido el proceso de inicializacion
+    /// </summary>
+    private bool Inicializado { get; set; }
 
     /// <summary>
     /// Instruccion sql para obtener todas las rutina que no son de sistema
@@ -69,9 +74,8 @@ namespace Watari.Funciones.Sql
     public FuncionRutinasSql(string cadenaDeConexion, string directorioEsquema)
     {
       CadenaDeConexion = cadenaDeConexion;
-      DirectorioEsquema = directorioEsquema.EndsWith(@"\")
-        ? directorioEsquema
-        : directorioEsquema + @"\";
+      DirectorioSolucion = directorioEsquema;
+      Inicializado = false;
     }
 
     #region Metodos Publicos
@@ -83,6 +87,7 @@ namespace Watari.Funciones.Sql
     /// <returns></returns>
     public async Task Sincronizar()
     {
+      Inicializar();
       List<RutinaSql> rutinas = await ObtenerRutinasSql();
       Console.WriteLine($@"Funciones Escalar : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.FuncionEscalar))}.");
       Console.WriteLine($@"Funciones Tabla : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.FuncionTabla))}.");
@@ -115,15 +120,16 @@ namespace Watari.Funciones.Sql
     /// Determina si existen los directorios asociados a las rutinas
     /// sql y si no, los crea.
     /// </summary>
-    private void InicializarDirectoriosDelEsquema()
+    private void Inicializar()
     {
+      if (Inicializado) return;
       //Comprobar que exista el directorio de procedimientos, si no, crearlo.
       if (!Directory.Exists(DirectorioProcedimientos))
         Directory.CreateDirectory(DirectorioProcedimientos);
 
       //Comprobar que exista el directorio de funciones, si no, crearlo.
-      if (!Directory.Exists(DirectorioEsquema + @"Funciones"))
-        Directory.CreateDirectory(DirectorioEsquema + @"Funciones");
+      if (!Directory.Exists(DirectorioSolucion + @"Funciones"))
+        Directory.CreateDirectory(DirectorioSolucion + @"Funciones");
 
       //Comprobar que exista el directorio de funciones escalares, si no, crearlo.
       if (!Directory.Exists(DirectorioFuncionesEscalares))
@@ -132,6 +138,7 @@ namespace Watari.Funciones.Sql
       //Comprobar que exista el directorio de funciones tipo tabla, si no, crearlo.
       if (!Directory.Exists(DirectorioFuncionesTabla))
         Directory.CreateDirectory(DirectorioFuncionesTabla);
+      Inicializado = true;
     }
 
     /// <summary>
@@ -179,7 +186,6 @@ namespace Watari.Funciones.Sql
       {
         Console.WriteLine($@"No se han podido eliminar las rutinas anteriores {e.Message}");
       }
-      InicializarDirectoriosDelEsquema();
     }
 
     /// <summary>
@@ -209,7 +215,7 @@ namespace Watari.Funciones.Sql
             directorio = DirectorioFuncionesTabla;
             break;
           default:
-            directorio = DirectorioEsquema;
+            directorio = DirectorioSolucion;
             break;
         }
         string urlArchivo = $@"{directorio}{r.Nombre}.sql";
