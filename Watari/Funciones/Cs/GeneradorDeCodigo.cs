@@ -73,20 +73,11 @@ namespace Watari.Funciones.Cs
         {
           //Solicitar confirmacion
           Console.WriteLine($@"Ya existe la entidad {nombre}.cs, ¿Quieres sobreescribir su contenido (s/n)?");
-          bool continuar = Console.ReadKey(false).Key.Equals(ConsoleKey.S);
-          if (continuar)
-          {
-            //Escribir el contenido de la entidad
-            string contenido = ContenidoPlantillaEntidad.Replace(@"{{Nombre}}", nombre);
-            await File.WriteAllTextAsync(directorioEntidad, contenido);
-          }
+          continue;
         }
-        else
-        {
-          //Escribir el contenido de la entidad
-          string contenido = ContenidoPlantillaEntidad.Replace(@"{{Nombre}}", nombre);
-          await File.WriteAllTextAsync(directorioEntidad, contenido);
-        }
+        //Escribir el contenido de la entidad
+        string contenido = ContenidoPlantillaEntidad.Replace(@"{{Nombre}}", nombre);
+        await File.WriteAllTextAsync(directorioEntidad, contenido);
       }
     }
 
@@ -114,20 +105,11 @@ namespace Watari.Funciones.Cs
         {
           //Solicitar confirmacion
           Console.WriteLine($@"Ya existe el proveedor de datos {nombre}.cs, ¿Quieres sobreescribir su contenido (s/n)?");
-          bool continuar = Console.ReadKey(false).Key.Equals(ConsoleKey.S);
-          if (continuar)
-          {
-            //Escribir el contenido del proveedor de datos
-            string contenido = ContenidoPlantillaProveedor.Replace(@"{{Nombre}}", nombre);
-            await File.WriteAllTextAsync(directorioProveedor, contenido);
-          }
+          continue;
         }
-        else
-        {
-          //Escribir el contenido del proveedor de datos
-          string contenido = ContenidoPlantillaProveedor.Replace(@"{{Nombre}}", nombre);
-          await File.WriteAllTextAsync(directorioProveedor, contenido);
-        }
+        //Escribir el contenido del proveedor de datos
+        string contenido = ContenidoPlantillaProveedor.Replace(@"{{Nombre}}", nombre);
+        await File.WriteAllTextAsync(directorioProveedor, contenido);
       }
     }
 

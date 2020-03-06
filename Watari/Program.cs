@@ -18,12 +18,10 @@ namespace Watari
   {
     #region Propiedades
 
-    private const string Ayuda = @"-------------Opciones---------------
->Sql -RutinasSql -Sincronizar
+    private const string Ayuda = @">Sql -RutinasSql -Sincronizar
 >Sql -RutinasSql -Listado
->Cs -Generar -Entidad Entidad1,Entidad2,Entidad3
->Cs -Generar -ProveedorDeDatos Entidad1,Entidad2,Entidad3
-------------------------------------";
+>Cs  -Generar    -Entidad Entidad1,...
+>Cs  -Generar    -ProveedorDeDatos Entidad1,...";
 
     /// <summary>
     /// Indica si el ambito de trabajo ha iniciado correctamente
@@ -66,7 +64,6 @@ namespace Watari
       }
       //Procesar el comando solicitado
       ProcesarComando(args).Wait();
-      Console.WriteLine(@":p");
     }
 
     #region Metodos Privados
