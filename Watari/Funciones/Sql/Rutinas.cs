@@ -44,11 +44,6 @@ namespace Watari.Funciones.Sql
     private string DirectorioFuncionesTabla => $@"{DirectorioSolucion}Contexto\Esquema\Funciones\Tabla\";
 
     /// <summary>
-    /// Indica si ha concluido el proceso de inicializacion
-    /// </summary>
-    private bool Inicializado { get; set; }
-
-    /// <summary>
     /// Instruccion sql para obtener todas las rutina que no son de sistema
     /// </summary>
     private const string SqlObtenerRutinas = @"
@@ -75,7 +70,6 @@ namespace Watari.Funciones.Sql
     {
       CadenaDeConexion = cadenaDeConexion;
       DirectorioSolucion = directorioEsquema;
-      Inicializado = false;
     }
 
     #region Metodos Publicos
@@ -87,7 +81,6 @@ namespace Watari.Funciones.Sql
     /// <returns></returns>
     public async Task Sincronizar()
     {
-      Inicializar();
       List<RutinaSql> rutinas = await ObtenerRutinasSql();
       Console.WriteLine($@"Funciones Escalar : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.FuncionEscalar))}.");
       Console.WriteLine($@"Funciones Tabla : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.FuncionTabla))}.");
@@ -122,7 +115,6 @@ namespace Watari.Funciones.Sql
     /// </summary>
     private void Inicializar()
     {
-      if (Inicializado) return;
       //Comprobar que exista el directorio de procedimientos, si no, crearlo.
       if (!Directory.Exists(DirectorioProcedimientos))
         Directory.CreateDirectory(DirectorioProcedimientos);
@@ -138,7 +130,6 @@ namespace Watari.Funciones.Sql
       //Comprobar que exista el directorio de funciones tipo tabla, si no, crearlo.
       if (!Directory.Exists(DirectorioFuncionesTabla))
         Directory.CreateDirectory(DirectorioFuncionesTabla);
-      Inicializado = true;
     }
 
     /// <summary>
@@ -186,6 +177,7 @@ namespace Watari.Funciones.Sql
       {
         Console.WriteLine($@"No se han podido eliminar las rutinas anteriores {e.Message}");
       }
+      Inicializar();
     }
 
     /// <summary>
