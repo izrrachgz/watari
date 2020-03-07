@@ -8,10 +8,22 @@
 
   <ItemGroup>
     <None Remove="Configuracion.json" />
+    <None Remove="Plantillas\Cs\ConfiguracionEntidad.txt" />
+    <None Remove="Plantillas\Cs\Entidad.txt" />
+    <None Remove="Plantillas\Cs\ProveedorDeDatos.txt" />
   </ItemGroup>
 
   <ItemGroup>
     <Content Include="Configuracion.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plantillas\Cs\ConfiguracionEntidad.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plantillas\Cs\Entidad.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plantillas\Cs\ProveedorDeDatos.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -19,15 +31,6 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Update="Plantillas\Cs\Entidad.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Plantillas\Cs\ProveedorDeDatos.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
 
 </Project>

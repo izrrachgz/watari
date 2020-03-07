@@ -1,8 +1,8 @@
 ﻿using System;
-using System.IO;
-using System.Text;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Watari.Extensiones;
+using Watari.Utilidades;
 
 namespace Watari.Funciones.Cs
 {
@@ -21,34 +21,51 @@ namespace Watari.Funciones.Cs
     private string DirectorioEntidades => $@"{DirectorioSolucion}Contexto\Entidades\";
 
     /// <summary>
+    /// Directorio donde se almacenan las configuraciones de entidad
+    /// </summary>
+    private string DirectorioConfiguracionEntidad => $@"{DirectorioSolucion}Contexto\Esquema\Configuraciones\";
+
+    /// <summary>
     /// Directorio donde se almacenan los proveedores de datos
     /// </summary>
     private string DirectorioProveedoresDeDatos => $@"{DirectorioSolucion}Negocio\ProveedoresDeDatos\";
-
-    /// <summary>
-    /// Contenido de la plantilla de la entidad
-    /// </summary>
-    private string ContenidoPlantillaEntidad { get; set; }
-
-    /// <summary>
-    /// Contenido de la plantilla del proveedor de datos
-    /// </summary>
-    private string ContenidoPlantillaProveedor { get; set; }
 
     /// <summary>
     /// Indica si ha concluido el proceso de inicializacion
     /// </summary>
     private bool Inicializado { get; set; }
 
+    /// <summary>
+    /// Plantillas para generar archivos
+    /// </summary>
+    private List<Plantilla> Plantillas { get; set; }
+
     #endregion
 
     public FuncionGeneradorDeCodigo(string directorioSolucion)
     {
       DirectorioSolucion = directorioSolucion;
+      Plantillas = new List<Plantilla>(0);
       Inicializado = false;
     }
 
     #region Metodos Publicos
+
+    /// <summary>
+    /// Crea la entidad, su configuracion y el proveedor de datos
+    /// asociado.
+    /// </summary>
+    /// <param name="nombres">Eentidades</param>
+    /// <returns></returns>
+    public async Task ConjuntoEntidad(string[] nombres)
+    {
+      //Generar todas las entidades
+      await Entidades(nombres);
+      //Generar todas sus configuraciones
+      await ConfiguracionesDeEntidades(nombres);
+      //Generar todos sus proveedores de datos
+      await ProveedoresDeDatos(nombres);
+    }
 
     /// <summary>
     /// Crea la entidad base para las entidades especificadas
@@ -58,26 +75,39 @@ namespace Watari.Funciones.Cs
     public async Task Entidades(string[] nombres)
     {
       await Inicializar();
+      Plantilla p = Plantillas.Obtener(@"Entidad");
       //Verificar que se haya cargado el contenido de la plantilla de entidad
-      if (ContenidoPlantillaEntidad.NoEsValida())
+      if (p == null || p.Contenido.NoEsValida())
       {
         Console.WriteLine(@"La plantilla para construir la entidad no es valida.");
         return;
       }
+      string[] claves = { @"{{Nombre}}" };
       foreach (string nombre in nombres)
       {
-        if (nombre.NoEsValida()) continue;
-        string directorioEntidad = $@"{DirectorioEntidades}{nombre}.cs";
-        //Verificar si existe el archivo de entidad
-        if (File.Exists(directorioEntidad))
-        {
-          //Solicitar confirmacion
-          Console.WriteLine($@"Ya existe la entidad {nombre}.cs, ¿Quieres sobreescribir su contenido (s/n)?");
-          continue;
-        }
-        //Escribir el contenido de la entidad
-        string contenido = ContenidoPlantillaEntidad.Replace(@"{{Nombre}}", nombre);
-        await File.WriteAllTextAsync(directorioEntidad, contenido);
+        await p.Generar(DirectorioEntidades, nombre, claves, new Dictionary<string, string>(1) { { @"{{Nombre}}", nombre } });
+      }
+    }
+
+    /// <summary>
+    /// Crea la entidad base para las entidades especificadas
+    /// </summary>
+    /// <param name="nombres">Entidades</param>
+    /// <returns></returns>
+    public async Task ConfiguracionesDeEntidades(string[] nombres)
+    {
+      await Inicializar();
+      Plantilla p = Plantillas.Obtener(@"ConfiguracionEntidad");
+      //Verificar que se haya cargado el contenido de la plantilla de entidad
+      if (p == null || p.Contenido.NoEsValida())
+      {
+        Console.WriteLine(@"La plantilla para construir la configuracion de la entidad no es valida.");
+        return;
+      }
+      string[] claves = { @"{{Nombre}}" };
+      foreach (string nombre in nombres)
+      {
+        await p.Generar(DirectorioConfiguracionEntidad, nombre, claves, new Dictionary<string, string>(1) { { @"{{Nombre}}", nombre } });
       }
     }
 
@@ -90,26 +120,17 @@ namespace Watari.Funciones.Cs
     public async Task ProveedoresDeDatos(string[] nombres)
     {
       await Inicializar();
-      //Verificar que se haya cargado el contenido de la plantilla de proveedor de datos
-      if (ContenidoPlantillaProveedor.NoEsValida())
+      Plantilla p = Plantillas.Obtener(@"ProveedorDeDatos");
+      //Verificar que se haya cargado el contenido de la plantilla de entidad
+      if (p == null || p.Contenido.NoEsValida())
       {
         Console.WriteLine(@"La plantilla para construir el proveedor de datos no es valida.");
         return;
       }
+      string[] claves = { @"{{Nombre}}" };
       foreach (string nombre in nombres)
       {
-        if (nombre.NoEsValida()) continue;
-        string directorioProveedor = $@"{DirectorioProveedoresDeDatos}{nombre}.cs";
-        //Verificar si existe el archivo de entidad
-        if (File.Exists(directorioProveedor))
-        {
-          //Solicitar confirmacion
-          Console.WriteLine($@"Ya existe el proveedor de datos {nombre}.cs, ¿Quieres sobreescribir su contenido (s/n)?");
-          continue;
-        }
-        //Escribir el contenido del proveedor de datos
-        string contenido = ContenidoPlantillaProveedor.Replace(@"{{Nombre}}", nombre);
-        await File.WriteAllTextAsync(directorioProveedor, contenido);
+        await p.Generar(DirectorioProveedoresDeDatos, nombre, claves, new Dictionary<string, string>(1) { { @"{{Nombre}}", nombre } });
       }
     }
 
@@ -124,42 +145,15 @@ namespace Watari.Funciones.Cs
     private async Task Inicializar()
     {
       if (Inicializado) return;
-      //Verificar que exista la plantilla de entidades
-      string directorioPlantillaEntidad = $@"{AppDomain.CurrentDomain.BaseDirectory}Plantillas\Cs\Entidad.txt";
-      if (File.Exists(directorioPlantillaEntidad))
+      Plantillas = new List<Plantilla>(3)
       {
-        ContenidoPlantillaEntidad = await ObtenerContenidoDeArchivo(directorioPlantillaEntidad);
-      }
-
-      //Verificar que exista la plantilla de proveedores
-      string directorioPlantillaProveedor = $@"{AppDomain.CurrentDomain.BaseDirectory}Plantillas\Cs\ProveedorDeDatos.txt";
-      if (File.Exists(directorioPlantillaProveedor))
-      {
-        ContenidoPlantillaProveedor = await ObtenerContenidoDeArchivo(directorioPlantillaProveedor);
-      }
+        new Plantilla(@"Cs\", @"Entidad", @"cs"),
+        new Plantilla(@"Cs\", @"ConfiguracionEntidad", @"cs"),
+        new Plantilla(@"Cs\", @"ProveedorDeDatos", @"cs")
+      };
+      foreach (Plantilla p in Plantillas)
+        await p.Cargar();
       Inicializado = true;
-    }
-
-    /// <summary>
-    /// Devuelve el contenido de un archivo
-    /// </summary>
-    /// <param name="url">Direccion hacia el archivo</param>
-    /// <returns>Cadena Alfanumerica</returns>
-    private async Task<string> ObtenerContenidoDeArchivo(string url)
-    {
-      if (!url.EsDireccionDeArchivo()) return @"";
-      StringBuilder sb = new StringBuilder();
-      using (FileStream fs = File.OpenRead(url))
-      {
-        using (StreamReader sr = new StreamReader(fs))
-        {
-          while (!sr.EndOfStream)
-            sb.AppendLine(await sr.ReadLineAsync());
-          sr.Dispose();
-        }
-        fs.Dispose();
-      }
-      return sb.ToString();
     }
 
     #endregion

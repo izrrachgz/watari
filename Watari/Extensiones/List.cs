@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Watari.Modelos;
+using Watari.Utilidades;
 
 namespace Watari.Extensiones
 {
@@ -25,6 +26,19 @@ namespace Watari.Extensiones
       object valor = columnas.FirstOrDefault(c => c.Nombre.Equals(nombre))?.Celda ?? default(T);
       valor = valor == DBNull.Value ? null : valor;
       return (T)valor;
+    }
+
+    /// <summary>
+    /// Permite obtener una plantilla a partir de una lista de plantillas
+    /// utilizando como busqueda el nombre
+    /// </summary>
+    /// <param name="plantillas">Coleccion de plantillas</param>
+    /// <param name="nombre">Nombre</param>
+    /// <returns>Plantilla</returns>
+    public static Plantilla Obtener(this List<Plantilla> plantillas, string nombre)
+    {
+      if (nombre.NoEsValida()) return null;
+      return plantillas.FirstOrDefault(p => p.Nombre.Equals(nombre));
     }
   }
 }

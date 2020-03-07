@@ -1,0 +1,24 @@
+﻿using Contexto.Entidades;
+using Utilidades.Extensiones;
+using Microsoft.EntityFrameworkCore;
+
+namespace Contexto.Esquema.Configuraciones
+{
+  /// <summary>
+  /// Provee un metodo para registrar la configuracion
+  /// de la entidad {{Nombre}}
+  /// </summary>
+  internal static class Esquema{{Nombre}}
+  {
+    /// <summary>
+    /// Permite registrar la configuracion
+    /// de esquema asociado a la entidad
+    /// </summary>
+    /// <param name="constructor">Constructor de esquema</param>
+    internal static void Registrar(ModelBuilder constructor)
+    {
+      constructor.Entity<{{Nombre}}>()
+        .AgregarIndicesBasicos();
+    }
+  }
+}

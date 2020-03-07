@@ -20,8 +20,10 @@ namespace Watari
 
     private const string Ayuda = @">Sql -RutinasSql -Sincronizar
 >Sql -RutinasSql -Listado
->Cs  -Generar    -Entidad Entidad1,...
->Cs  -Generar    -ProveedorDeDatos Entidad1,...";
+>Cs  -Generar    -Conjunto Entidad,...
+>Cs  -Generar    -Entidad Entidad,...
+>Cs  -Generar    -ConfiguracionEntidad Entidad,...
+>Cs  -Generar    -ProveedorDeDatos Entidad,...";
 
     /// <summary>
     /// Indica si el ambito de trabajo ha iniciado correctamente
@@ -195,9 +197,17 @@ namespace Watari
             case @"-generar":
               switch (parametro)
               {
+                case @"-conjunto":
+                  string[] nombres = args[3].Split(',');
+                  await FuncionGeneradorDeCodigo.ConjuntoEntidad(nombres);
+                  break;
                 case @"-entidad":
                   string[] entidades = args[3].Split(',');
                   await FuncionGeneradorDeCodigo.Entidades(entidades);
+                  break;
+                case @"-configuracionentidad":
+                  string[] configuraciones = args[3].Split(',');
+                  await FuncionGeneradorDeCodigo.ConfiguracionesDeEntidades(configuraciones);
                   break;
                 case @"-proveedordedatos":
                   string[] proveedores = args[3].Split(',');
