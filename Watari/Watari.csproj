@@ -4,6 +4,9 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <StartupObject>Watari.Program</StartupObject>
+    <Authors>Israel Ch.</Authors>
+    <Description>Watari es una herramienta complemento con multiples funciones, su proposito es agilizar el desarrollo de soluciones.</Description>
+    <Copyright>Israel.Ch@2020</Copyright>
   </PropertyGroup>
 
   <ItemGroup>

@@ -115,6 +115,7 @@ namespace Watari.Utilidades
         return;
       }
       //Escribir el contenido de la plantilla
+      Console.WriteLine($@"Escribiendo archivo {nombre}.{Extension}");
       await File.WriteAllTextAsync(directorio, contenido);
     }
   }
