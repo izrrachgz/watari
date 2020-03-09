@@ -101,7 +101,10 @@ namespace Watari.Funciones.Sql
       List<RutinaSql> rutinas = await ObtenerRutinasSql();
       rutinas.ForEach(r =>
       {
-        Console.WriteLine($"[{r.Esquema}].[{r.Nombre}] Creado : {r.Creado}, Ultima Modificacion : {r.Modificado}");
+        Console.WriteLine($@"{r.Tipo} [{r.Esquema}].[{r.Nombre}]");
+        Console.WriteLine($@"Creado [{r.Creado}]");
+        Console.WriteLine($@"Modificado [{r.Modificado}]");
+        Console.WriteLine(@"");
       });
     }
 
