@@ -40,6 +40,9 @@ namespace Watari
     /// </summary>
     private static FuncionRutinasSql FuncionRutinasSql { get; set; }
 
+    /// <summary>
+    /// Funciones para generar codigo cs
+    /// </summary>
     private static FuncionGeneradorDeCodigo FuncionGeneradorDeCodigo { get; set; }
 
     #endregion
