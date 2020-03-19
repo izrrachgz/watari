@@ -26,7 +26,7 @@ namespace Negocio.ProveedoresDeDatos
     /// </summary>
     /// <param name="id">Identificador Primario de {{Nombre}}</param>
     /// <returns>Elemento de {{Nombre}}</returns>
-    public async Task<RespuestaModelo<{{Nombre}}>> ObtenerPorId(int id)
+    public async Task<RespuestaModelo<{{Nombre}}>> ObtenerPorId(long id)
       => await base.Obtener(id);
     
     /// <summary>
