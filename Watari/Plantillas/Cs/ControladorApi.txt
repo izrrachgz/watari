@@ -1,0 +1,58 @@
+﻿using System.Threading.Tasks;
+using Contexto.Entidades;
+using Utilidades.Modelos;
+using Microsoft.AspNetCore.Mvc;
+using Negocio.ProveedoresDeDatos;
+
+namespace Api.Controllers
+{
+  /// <summary>
+  /// Provee un mecanismo para exponer los puntos de entrada
+  /// de negocio de {{Nombre}}
+  /// </summary>
+  [ApiController, Route("Api/[controller]")]
+  public class {{Nombre}}Controller : ControllerBase
+  {
+    /// <summary>
+    /// Referencia de acceso hacia los datos de {{Nombre}} via Negocio
+    /// </summary>
+    private Proveedor{{Nombre}} Proveedor{{Nombre}} { get; }
+
+    /// <summary>
+    /// Crea una nueva instancia del servicio de {{Nombre}}
+    /// </summary>
+    public {{Nombre}}Controller()
+    {
+      Proveedor{{Nombre}} = new Proveedor{{Nombre}}();
+    }
+
+    /// <summary>
+    /// Permite obtener todos los registros de {{Nombre}} utilizando
+    /// un indice de pagina
+    /// </summary>
+    /// <param name="solicitud">Solicitud de pagina</param>
+    /// <returns>RespuestaColeccion de {{Nombre}}</returns>
+    [HttpPost, Route(@"ObtenerPorPagina")]
+    public async Task<RespuestaColeccion<{{Nombre}}>> Obtener(SolicitudPagina solicitud)
+      => await Proveedor{{Nombre}}.Obtener(new Paginado(solicitud));
+
+    /// <summary>
+    /// Permite obtener un registro de {{Nombre}} mediante su identificador primario
+    /// </summary>
+    /// <param name="id">Identificador primario</param>
+    /// <returns>RespuestaModelo de {{Nombre}}</returns>
+    [HttpPost, Route(@"ObtenerPorId/{id}")]
+    public async Task<RespuestaModelo<{{Nombre}}>> ObtenerPorId([FromQuery] long id)
+      => await Proveedor{{Nombre}}.ObtenerPorId(id);
+
+    /// <summary>
+    /// Permite guardar un registro de bitacora ya sea nuevo o modificacion
+    /// de los valores del mismo
+    /// </summary>
+    /// <param name="modelo">{{Nombre}}</param>
+    /// <returns>RespuestaBasica</returns>
+    [HttpPost, Route(@"Guardar{{Nombre}}")]
+    public async Task<RespuestaBasica> Guardar{{Nombre}}([FromBody] {{Nombre}} modelo)
+      => await Proveedor{{Nombre}}.Guardar{{Nombre}}(modelo);
+  }
+}

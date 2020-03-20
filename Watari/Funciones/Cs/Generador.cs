@@ -31,6 +31,11 @@ namespace Watari.Funciones.Cs
     private string DirectorioProveedoresDeDatos => $@"{DirectorioSolucion}Negocio\ProveedoresDeDatos\";
 
     /// <summary>
+    /// Directorio donde se almacenan los controladores api
+    /// </summary>
+    private string DirectorioControladoresApi => $@"{DirectorioSolucion}Api\Controllers\";
+
+    /// <summary>
     /// Indica si ha concluido el proceso de inicializacion
     /// </summary>
     private bool Inicializado { get; set; }
@@ -65,6 +70,8 @@ namespace Watari.Funciones.Cs
       await ConfiguracionesDeEntidades(nombres);
       //Generar todos sus proveedores de datos
       await ProveedoresDeDatos(nombres);
+      //Generar todos sus controladores api
+      await ControladoresApi(nombres);
     }
 
     /// <summary>
@@ -76,7 +83,7 @@ namespace Watari.Funciones.Cs
     {
       await Inicializar();
       Plantilla p = Plantillas.Obtener(@"Entidad");
-      //Verificar que se haya cargado el contenido de la plantilla de entidad
+      //Verificar que se haya cargado el contenido de la plantilla
       if (p == null || p.Contenido.NoEsValida())
       {
         Console.WriteLine(@"La plantilla para construir la entidad no es valida.");
@@ -98,7 +105,7 @@ namespace Watari.Funciones.Cs
     {
       await Inicializar();
       Plantilla p = Plantillas.Obtener(@"ConfiguracionEntidad");
-      //Verificar que se haya cargado el contenido de la plantilla de entidad
+      //Verificar que se haya cargado el contenido de la plantilla
       if (p == null || p.Contenido.NoEsValida())
       {
         Console.WriteLine(@"La plantilla para construir la configuracion de la entidad no es valida.");
@@ -121,7 +128,7 @@ namespace Watari.Funciones.Cs
     {
       await Inicializar();
       Plantilla p = Plantillas.Obtener(@"ProveedorDeDatos");
-      //Verificar que se haya cargado el contenido de la plantilla de entidad
+      //Verificar que se haya cargado el contenido de la plantilla
       if (p == null || p.Contenido.NoEsValida())
       {
         Console.WriteLine(@"La plantilla para construir el proveedor de datos no es valida.");
@@ -131,6 +138,29 @@ namespace Watari.Funciones.Cs
       foreach (string nombre in nombres)
       {
         await p.Generar(DirectorioProveedoresDeDatos, nombre, claves, new Dictionary<string, string>(1) { { @"{{Nombre}}", nombre } });
+      }
+    }
+
+    /// <summary>
+    /// Crea el controlador api de datos base para las entidades
+    /// especificadas
+    /// </summary>
+    /// <param name="nombres">Nombres de los Controladores</param>
+    /// <returns></returns>
+    public async Task ControladoresApi(string[] nombres)
+    {
+      await Inicializar();
+      Plantilla p = Plantillas.Obtener(@"ControladorApi");
+      //Verificar que se haya cargado el contenido de la plantilla
+      if (p == null || p.Contenido.NoEsValida())
+      {
+        Console.WriteLine(@"La plantilla para construir el controlador api no es valida.");
+        return;
+      }
+      string[] claves = { @"{{Nombre}}" };
+      foreach (string nombre in nombres)
+      {
+        await p.Generar(DirectorioControladoresApi, nombre, claves, new Dictionary<string, string>(1) { { @"{{Nombre}}", nombre } });
       }
     }
 
@@ -149,7 +179,8 @@ namespace Watari.Funciones.Cs
       {
         new Plantilla(@"Cs\", @"Entidad", @"cs"),
         new Plantilla(@"Cs\", @"ConfiguracionEntidad", @"cs"),
-        new Plantilla(@"Cs\", @"ProveedorDeDatos", @"cs")
+        new Plantilla(@"Cs\", @"ProveedorDeDatos", @"cs"),
+        new Plantilla(@"Cs\", @"ControladorApi", @"cs"),
       };
       foreach (Plantilla p in Plantillas)
         await p.Cargar();

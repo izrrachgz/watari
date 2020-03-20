@@ -12,6 +12,7 @@
   <ItemGroup>
     <None Remove="Configuracion.json" />
     <None Remove="Plantillas\Cs\ConfiguracionEntidad.txt" />
+    <None Remove="Plantillas\Cs\ControladorApi.txt" />
     <None Remove="Plantillas\Cs\Entidad.txt" />
     <None Remove="Plantillas\Cs\ProveedorDeDatos.txt" />
   </ItemGroup>
@@ -21,6 +22,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Plantillas\Cs\ConfiguracionEntidad.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Plantillas\Cs\ControladorApi.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Plantillas\Cs\Entidad.txt">
