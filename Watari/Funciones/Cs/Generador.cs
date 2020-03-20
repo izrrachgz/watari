@@ -160,7 +160,7 @@ namespace Watari.Funciones.Cs
       string[] claves = { @"{{Nombre}}" };
       foreach (string nombre in nombres)
       {
-        await p.Generar(DirectorioControladoresApi, nombre, claves, new Dictionary<string, string>(1) { { @"{{Nombre}}", nombre } });
+        await p.Generar(DirectorioControladoresApi, $@"{nombre}Controller", claves, new Dictionary<string, string>(1) { { @"{{Nombre}}", nombre } });
       }
     }
 

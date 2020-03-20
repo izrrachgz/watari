@@ -23,7 +23,8 @@ namespace Watari
 >Cs  -Generar    -Conjunto Entidad,...
 >Cs  -Generar    -Entidad Entidad,...
 >Cs  -Generar    -ConfiguracionEntidad Entidad,...
->Cs  -Generar    -ProveedorDeDatos Entidad,...";
+>Cs  -Generar    -ProveedorDeDatos Entidad,...
+>Cs  -Generar    -ControladorApi Entidad,...";
 
     /// <summary>
     /// Indica si el ambito de trabajo ha iniciado correctamente
@@ -215,6 +216,10 @@ namespace Watari
                 case @"-proveedordedatos":
                   string[] proveedores = args[3].Split(',');
                   await FuncionGeneradorDeCodigo.ProveedoresDeDatos(proveedores);
+                  break;
+                case @"-controladorapi":
+                  string[] controladores = args[3].Split(',');
+                  await FuncionGeneradorDeCodigo.ControladoresApi(controladores);
                   break;
                 default:
                   MostrarAyuda();
