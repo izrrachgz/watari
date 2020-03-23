@@ -10,7 +10,7 @@ namespace Negocio.ProveedoresDeDatos
   /// Provee los mecanismos para acceder a los datos
   /// de la entidad {{Nombre}}
   /// </summary>
-  public class Proveedor{{Nombre}} : ProveedorDeDatosBase<{{Nombre}}>
+  public sealed class Proveedor{{Nombre}} : ProveedorDeDatosBase<{{Nombre}}>
   {
     /// <summary>
     /// Devuelve todos los registros de {{Nombre}} dentro de un modelo de datos paginado
