@@ -218,7 +218,7 @@ namespace Watari.Funciones.Sql
         using (FileStream fs = File.OpenWrite(urlArchivo))
         {
           fs.Position = 0;
-          Console.WriteLine($@"Escribiendo archivo {r.Nombre}.");
+          Console.WriteLine($@"Escribiendo archivo {urlArchivo}.");
           //Escribir el contenido del archivo desde la posicion 0
           using (StreamWriter sw = new StreamWriter(fs))
           {

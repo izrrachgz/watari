@@ -11,7 +11,7 @@ namespace Api.Controllers
   /// de negocio de {{Nombre}}
   /// </summary>
   [ApiController, Route("Api/[controller]")]
-  public class {{Nombre}}Controller : ControllerBase
+  public sealed class {{Nombre}}Controller : ControllerBase
   {
     /// <summary>
     /// Referencia de acceso hacia los datos de {{Nombre}} via Negocio
