@@ -7,6 +7,7 @@ using Watari.Extensiones;
 using Watari.Funciones.Cs;
 using Watari.Funciones.Sql;
 using Watari.Modelos;
+using Watari.Utilidades;
 
 namespace Watari
 {
@@ -161,6 +162,7 @@ namespace Watari
         MostrarAyuda();
         return;
       }
+
       //El primer valor de argumento debe ser la funcion
       string funcion = args[0].ToLowerInvariant();
       //El primer valor de argumento debe ser la operacion de la funcion a ejecutar
@@ -240,7 +242,34 @@ namespace Watari
     /// <summary>
     /// Muestra la ayuda de la aplicacion
     /// </summary>
-    private static void MostrarAyuda() => Console.WriteLine(Ayuda);
+    private static void MostrarAyuda()
+    {
+      Console.WriteLine(Ayuda);
+      TesoroDescubierto();
+    }
+
+    /// <summary>
+    /// Reproduce el tono conocido al descubrir
+    /// el tesoro
+    /// </summary>
+    private static void TesoroDescubierto()
+    {
+      #region Musica!
+
+      string url = $@"{AppDomain.CurrentDomain.BaseDirectory}Midis\";
+
+      if (Directory.Exists(url))
+      {
+        url = $@"{url}achievement.mid";
+        if (File.Exists(url))
+        {
+          ReproductorMidi reproductor = new ReproductorMidi(url);
+          reproductor.Reproducir();
+        }
+      }
+
+      #endregion
+    }
 
     #endregion
   }

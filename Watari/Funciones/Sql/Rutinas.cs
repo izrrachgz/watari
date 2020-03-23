@@ -102,8 +102,8 @@ namespace Watari.Funciones.Sql
       rutinas.ForEach(r =>
       {
         Console.WriteLine($@"{r.Tipo} [{r.Esquema}].[{r.Nombre}]");
-        Console.WriteLine($@"Creado [{r.Creado}]");
-        Console.WriteLine($@"Modificado [{r.Modificado}]");
+        Console.WriteLine($@"   Creado      [{r.Creado}]");
+        Console.WriteLine($@"   Modificado  [{r.Modificado}]");
         Console.WriteLine(@"");
       });
     }

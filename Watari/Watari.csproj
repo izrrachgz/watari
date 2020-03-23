@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <None Remove="Configuracion.json" />
+    <None Remove="Midis\achievement.mid" />
     <None Remove="Plantillas\Cs\ConfiguracionEntidad.txt" />
     <None Remove="Plantillas\Cs\ControladorApi.txt" />
     <None Remove="Plantillas\Cs\Entidad.txt" />
@@ -19,6 +20,9 @@
 
   <ItemGroup>
     <Content Include="Configuracion.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Midis\achievement.mid">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Plantillas\Cs\ConfiguracionEntidad.txt">
