@@ -87,7 +87,6 @@ namespace Watari.Funciones.Sql
       Console.WriteLine($@"Procedimientos Almacenados : {rutinas.Count(r => r.Tipo.Equals(TipoRutina.Procedimiento))}.");
       if (rutinas.Any())
       {
-        EliminarRutinasAnteriores();
         await GuardarRutinasEnArchivos(rutinas);
       }
     }
@@ -162,25 +161,6 @@ namespace Watari.Funciones.Sql
         rutinas = new List<RutinaSql>(0);
       }
       return rutinas;
-    }
-
-    /// <summary>
-    /// Elimina todos los archivos de rutina anteriores
-    /// y prepara los directorios para archivas las nuevas
-    /// </summary>
-    private void EliminarRutinasAnteriores()
-    {
-      try
-      {
-        Directory.Delete(DirectorioProcedimientos, true);
-        Directory.Delete(DirectorioFuncionesTabla, true);
-        Directory.Delete(DirectorioFuncionesEscalares, true);
-      }
-      catch (Exception e)
-      {
-        Console.WriteLine($@"No se han podido eliminar las rutinas anteriores {e.Message}");
-      }
-      Inicializar();
     }
 
     /// <summary>

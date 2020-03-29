@@ -43,15 +43,16 @@ namespace Watari.Utilidades
     }
 
     /// <summary>
-    /// Reproduce el archivo especificado
+    /// Reproduce el archivo especificado y espera a que termine
     /// </summary>
+    /// <param name="esperar">Especifica si hay que esperar al termino de la pista</param>
     /// <returns></returns>
-    public int Reproducir()
+    public int Reproducir(bool esperar = true)
     {
       if (Reproduciendo) return 0;
       Detener();
       mciSendString($@"open {Url} alias track", new StringBuilder(@""), 0, IntPtr.Zero);
-      return mciSendString($@"play track wait", new StringBuilder(@""), 0, IntPtr.Zero);
+      return mciSendString($@"play track {(esperar ? @"wait" : @"")}", new StringBuilder(@""), 0, IntPtr.Zero);
     }
 
     /// <summary>
