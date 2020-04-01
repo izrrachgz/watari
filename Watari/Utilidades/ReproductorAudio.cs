@@ -6,9 +6,9 @@ namespace Watari.Utilidades
 {
   /// <summary>
   /// Provee un mecanismo para manipular archivos multimedia
-  /// midi
+  /// de audio
   /// </summary>
-  public sealed class ReproductorMidi
+  public sealed class ReproductorAudio
   {
     /// <summary>
     /// Interfaz de control de medios de windows
@@ -36,7 +36,7 @@ namespace Watari.Utilidades
     /// Crea una nueva instancia de reproductor midi
     /// </summary>
     /// <param name="url">Direccion hacia el archivo midi asociado</param>
-    public ReproductorMidi(string url)
+    public ReproductorAudio(string url)
     {
       Reproduciendo = false;
       Url = url;
@@ -51,8 +51,9 @@ namespace Watari.Utilidades
     {
       if (Reproduciendo) return 0;
       Detener();
-      mciSendString($@"open {Url} alias track", new StringBuilder(@""), 0, IntPtr.Zero);
-      return mciSendString($@"play track {(esperar ? @"wait" : @"")}", new StringBuilder(@""), 0, IntPtr.Zero);
+      string tipo = Url.Contains(@".mp3") ? @"type mpegvideo" : @"";
+      mciSendString($@"open {Url} {tipo}", new StringBuilder(@""), 0, IntPtr.Zero);
+      return mciSendString($@"play {Url} {(esperar ? @"wait" : @"")}", new StringBuilder(@""), 0, IntPtr.Zero);
     }
 
     /// <summary>
@@ -60,8 +61,8 @@ namespace Watari.Utilidades
     /// </summary>
     public void Detener()
     {
-      mciSendString(@"stop track", new StringBuilder(@""), 0, IntPtr.Zero);
-      mciSendString(@"close track", new StringBuilder(@""), 0, IntPtr.Zero);
+      mciSendString($@"stop {Url}", new StringBuilder(@""), 0, IntPtr.Zero);
+      mciSendString($@"close {Url}", new StringBuilder(@""), 0, IntPtr.Zero);
     }
 
     /// <summary>

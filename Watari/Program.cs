@@ -237,6 +237,10 @@ namespace Watari
           MostrarAyuda();
           break;
       }
+      if (args.Length.Equals(4) && string.Join(@"", args).Equals(@"cake"))
+      {
+        Presentacion.PortalStillAlive();
+      }
     }
 
     /// <summary>
@@ -245,30 +249,6 @@ namespace Watari
     private static void MostrarAyuda()
     {
       Console.WriteLine(Ayuda);
-      TesoroDescubierto();
-    }
-
-    /// <summary>
-    /// Reproduce el tono conocido al descubrir
-    /// el tesoro
-    /// </summary>
-    private static void TesoroDescubierto()
-    {
-      #region Musica!
-
-      string url = $@"{AppDomain.CurrentDomain.BaseDirectory}Midis\";
-
-      if (Directory.Exists(url))
-      {
-        url = $@"{url}achievement.mid";
-        if (File.Exists(url))
-        {
-          ReproductorMidi reproductor = new ReproductorMidi(url);
-          reproductor.Reproducir();
-        }
-      }
-
-      #endregion
     }
 
     #endregion

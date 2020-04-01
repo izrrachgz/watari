@@ -12,7 +12,10 @@
 
   <ItemGroup>
     <None Remove="Configuracion.json" />
-    <None Remove="Midis\achievement.mid" />
+    <None Remove="FormaDeOnda\achievement.mid" />
+    <None Remove="FormaDeOnda\lostwoods.mid" />
+    <None Remove="FormaDeOnda\sa.mid" />
+    <None Remove="FormaDeOnda\stillalive.mp3" />
     <None Remove="Plantillas\Cs\ConfiguracionEntidad.txt" />
     <None Remove="Plantillas\Cs\ControladorApi.txt" />
     <None Remove="Plantillas\Cs\Entidad.txt" />
@@ -23,7 +26,10 @@
     <Content Include="Configuracion.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-    <Content Include="Midis\achievement.mid">
+    <Content Include="FormaDeOnda\sa.mid">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="FormaDeOnda\stillalive.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Plantillas\Cs\ConfiguracionEntidad.txt">
